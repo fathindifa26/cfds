@@ -10,7 +10,6 @@ Simulasi ini menghitung **indegree, outdegree, betweenness, closeness, dan eigen
 - **Baris** = dari siapa (source), **kolom** = ke siapa (target).
 - Isikan 1 jika ada hubungan (directed edge), 0 jika tidak.
 - Edit angka atau tambah baris/kolom untuk simulasi jumlah node/aktor berbeda.
-- **Eigenvector centrality** memakai matrix transpose (IN-centrality: skor tinggi jika node dihubungi node penting lain).
 """)
 
 # Input nama node
