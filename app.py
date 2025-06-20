@@ -6,7 +6,7 @@ import networkx as nx
 st.title("Simulasi Centrality pada Jaringan Sosial (SNA)")
 
 st.markdown("""
-Simulasi ini menghitung **indegree, outdegree, betweenness, closeness, dan eigenvector centrality** pada jaringan sosial berbasis adjacency matrix.  
+Simulasi ini menghitung **indegree, outdegree, betweenness, closeness, eigenvector centrality, dan PageRank** pada jaringan sosial berbasis adjacency matrix.  
 - **Baris** = dari siapa (source), **kolom** = ke siapa (target).
 - Isikan 1 jika ada hubungan (directed edge), 0 jika tidak.
 - Edit angka atau tambah baris/kolom untuk simulasi jumlah node/aktor berbeda.
@@ -65,7 +65,13 @@ try:
     idx = np.argmax(np.real(eigvals))
     v = np.abs(np.real(eigvecs[:, idx]))
     v_norm = v / v.max() if v.max() != 0 else v
-    
+
+    # PAGE RANK
+    pagerank = nx.pagerank(G, alpha=0.85)
+    # Normalisasi agar PageRank max = 1 (opsional)
+    pr_values = np.array([pagerank[n] for n in actual_names])
+    pr_norm = pr_values / pr_values.max() if pr_values.max() != 0 else pr_values
+
     st.markdown("### Centrality Metrics per Node")
     st.markdown("""
     - **Indegree**: jumlah edge masuk ke node (seberapa sering dihubungi)
@@ -73,6 +79,7 @@ try:
     - **Betweenness**: seberapa sering node menjadi "jembatan" pada jalur terpendek antar node lain
     - **Closeness**: seberapa dekat node ke semua node lain dalam jaringan (aksesibilitas)
     - **Eigenvector (IN-centrality)**: pengaruh global, tinggi jika dihubungi oleh node penting
+    - **PageRank**: kemungkinan node dikunjungi "random surfer" dalam jaringan (skala max=1)
     """)
 
     df_result = pd.DataFrame({
@@ -81,7 +88,8 @@ try:
         'Outdegree': [outdegree[n] for n in actual_names],
         'Betweenness': [np.round(betweenness[n], 4) for n in actual_names],
         'Closeness': [np.round(closeness[n], 4) for n in actual_names],
-        'Eigenvector (IN)': np.round(v_norm, 4)
+        'Eigenvector (IN)': np.round(v_norm, 4),
+        'PageRank': np.round(pr_norm, 4)
     })
     st.dataframe(df_result, use_container_width=True)
 except Exception as e:
